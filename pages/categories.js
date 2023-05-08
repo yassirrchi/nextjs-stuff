@@ -3,6 +3,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 export default function Categories(){
+    const[editedCategory,setEditedCategory]=useState(null)
+    const [parentCategory,SetParentCategory]=useState('')
     const[categories,setCategories]=useState([])
      
     useEffect(()=>{
@@ -16,11 +18,31 @@ export default function Categories(){
 
         })
     }
+    function editCategory(category){
+        setEditedCategory(category)
+        setName(category.name)
+        SetParentCategory(category?.parent?._id)
+
+
+
+    }
     
     const [name,setName]=useState('')
     async function saveCategory(ev){
+        const  data={name,parentCategory}
         ev.preventDefault()
-        await axios.post('/api/categories',{name})
+        if(editedCategory){
+            await axios.put('/api/categories',{...data,_id:editedCategory._id})
+            setEditedCategory(null)
+
+        }
+        else{
+            await axios.post('/api/categories',data)
+        }
+
+
+
+        
         setName('')
         fetchCategories()
 
@@ -29,20 +51,26 @@ export default function Categories(){
     return(
         <Layout>
             <h1>Categories</h1>
-            <label>New category name</label>
+            <label>{editedCategory?`Edit ${editedCategory?.name} category`:`create category`}</label>
             <form onSubmit={saveCategory} className="flex gap-1">
             <div className="flex">
                 <input type="text" className="mb-0" placeholder={"Category name"} value={name} onChange={ev=>setName(ev.target.value)}/>
+                <select className="mb-0" value={parentCategory} onChange={ev=>SetParentCategory(ev.target.value)}>
+                    <option value="">No parent category</option>
+                    {categories.length>0&&categories.map(category=><option value={category._id}>{category.name}</option>)}
+
+                     
+                </select>
                 <button type="submit" className="btn-save py-1">Save</button>
 
             </div>
             </form>
             <table className="basic mt-4">
                 <thead>
-                    <tr><td>Category name</td></tr>
+                    <tr><td>Category name</td><td>Parent Category</td><td></td></tr>
                 </thead>
                 <tbody>
-                    {categories.length>0&&categories.map(category=>(<tr><td>{category.name}</td></tr>))}
+                    {categories.length>0&&categories.map(category=>(<tr><td>{category.name}</td><td>{category?.parent?.name}</td><td><div><button className="btn-save mr-1" onClick={()=>editCategory(category)}>Edit</button><button className="btn-save">Delete</button></div></td></tr>))}
                 </tbody>
             </table>
             
