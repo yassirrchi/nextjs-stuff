@@ -18,6 +18,14 @@ export default async function handle(req,res){
         const categoryDoc=await Category.updateOne({_id},{name,parent:parentCategory})
         res.json(categoryDoc);
     }
+    if(method=="DELETE"){
+        console.log(333)
+        const {_id}=req.query
+        console.log(_id)
+        await  Category.deleteOne({_id:_id})
+        res.json('deleted')
+    
+    }
 
 
 }

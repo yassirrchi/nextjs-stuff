@@ -1,8 +1,9 @@
 import Layout from "@/components/Layout";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { withSwal } from 'react-sweetalert2';
 
-export default function Categories(){
+ function Categories({swal}){
     const[editedCategory,setEditedCategory]=useState(null)
     const [parentCategory,SetParentCategory]=useState('')
     const[categories,setCategories]=useState([])
@@ -19,11 +20,33 @@ export default function Categories(){
         })
     }
     function editCategory(category){
+
+        
         setEditedCategory(category)
         setName(category.name)
         SetParentCategory(category?.parent?._id)
 
 
+
+    }
+      function  deleteCategory(category){
+        swal.fire({
+            title: `Sure you want to delete '${category.name}'`,
+            text: `You confirm that ''${category.name}'' will be deleted forever`,
+            showCancelButton:true,
+            cancelButtonText:'Cancel',
+            confirmButtonText:'Yes, Delete!',
+            confirmButtonColor:'#d55'
+             
+        }).then(async result=>{
+            console.log(1)
+            
+            if(result.isConfirmed){
+                console.log(11)
+               await axios.delete('/api/categories?_id='+category._id)
+               fetchCategories()
+            }
+        }).catch(error=>{console.log(2)});
 
     }
     
@@ -70,7 +93,7 @@ export default function Categories(){
                     <tr><td>Category name</td><td>Parent Category</td><td></td></tr>
                 </thead>
                 <tbody>
-                    {categories.length>0&&categories.map(category=>(<tr><td>{category.name}</td><td>{category?.parent?.name}</td><td><div><button className="btn-save mr-1" onClick={()=>editCategory(category)}>Edit</button><button className="btn-save">Delete</button></div></td></tr>))}
+                    {categories.length>0&&categories.map(category=>(<tr><td>{category.name}</td><td>{category?.parent?.name}</td><td><div><button className="btn-save mr-1" onClick={()=>editCategory(category)}>Edit</button><button className="btn-save" onClick={()=>deleteCategory(category)}>Delete</button></div></td></tr>))}
                 </tbody>
             </table>
             
@@ -78,3 +101,11 @@ export default function Categories(){
     )
 
 }
+export default withSwal(({swal}, ref) => {
+     
+
+    return (
+        <Categories swal={swal}/>
+    );
+});
+ 
