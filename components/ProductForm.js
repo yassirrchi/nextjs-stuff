@@ -1,7 +1,7 @@
 import axios from "axios";
 import { redirect } from "next/dist/server/api-utils";
 import { Router, useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import Spinner from "./spinner";
 import { ReactSortable} from "react-sortablejs";
@@ -11,19 +11,31 @@ export default function ProductForm({
     description:existingDescription,
     price:existingPrice,
     images:existingImages,
+    category:assignedCategory
      
 }){
     const [title,setTitle]=useState(''||existingTitle);
+    const [category,setCategory]=useState(assignedCategory||'')
     const [description,setdescription]=useState(''||existingDescription);
     const [price,setPrice]=useState(''||existingPrice);
     const [images,setImages]=useState(existingImages||[])
     const [isUploading,setIsUploading]=useState(false)
     const [goToProducts,setGoToProducts]=useState(false);
+    const [categories, setCategories] = useState([]);
     const router=useRouter()
+
+    useEffect(()=>{
+        axios.get('/api/categories').then(result=>{
+            setCategories(result.data)
+             console.log(result.data)
+            
+        })
+    },[])
+     
     async function saveProduct(e){
 
         e.preventDefault()
-        const data={title,description,price,images}
+        const data={title,description,price,images,category}
         if(_id){
             //update
             await axios.put('/api/products',{...data,_id})
@@ -75,8 +87,16 @@ export default function ProductForm({
     
         <h1 className="text-blue-900 mb-2 text-xl">New Product</h1>
         <form onSubmit={saveProduct}>
+        
         <label>Product name</label>
         <input type="text" placeholder="product name"value={title} onChange={ev=>setTitle(ev.target.value)} />
+        <label>Category </label>
+
+        <select value={category} onChange={(ev)=>setCategory(ev.target.value)}>
+            <option value="">Uncategorized</option>
+            {categories.length && categories.map(c=>(<option value={c._id}>{c.name}</option>))}
+              
+        </select>
         <label>Images</label>
 
         <div className="mb-2 flex flex-wrap gap-2">

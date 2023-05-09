@@ -7,6 +7,7 @@ import { withSwal } from 'react-sweetalert2';
     const[editedCategory,setEditedCategory]=useState(null)
     const [parentCategory,SetParentCategory]=useState('')
     const[categories,setCategories]=useState([])
+    const [properties,setProperties]=useState([])
      
     useEffect(()=>{
        fetchCategories()
@@ -29,6 +30,26 @@ import { withSwal } from 'react-sweetalert2';
 
 
     }
+    function handlePropertyNameChange(index,property,newName){
+        setProperties(prev=>{
+            const properties=[...prev]
+            properties[index].name=newName
+            return properties
+
+        })
+
+    }
+    function handlePropertyValueChange(index,property,newValues){
+        setProperties(prev=>{
+            const properties=[...prev]
+            properties[index].values=newValues
+            return properties
+
+        })
+
+    }
+
+       
       function  deleteCategory(category){
         swal.fire({
             title: `Sure you want to delete '${category.name}'`,
@@ -71,31 +92,72 @@ import { withSwal } from 'react-sweetalert2';
 
 
     }
+    function addProperty(){
+        setProperties(prev=>{
+            return [...prev,{name:'',values:''}]
+        })
+    }
+    function removeProperty(indexToRemove){
+        setProperties(prev=>{
+            return [...prev].filter((p,pIndex)=>{
+                 return pIndex!==indexToRemove
+            })
+        })
+    }
     return(
         <Layout>
             <h1>Categories</h1>
             <label>{editedCategory?`Edit ${editedCategory?.name} category`:`create category`}</label>
-            <form onSubmit={saveCategory} className="flex gap-1">
-            <div className="flex">
-                <input type="text" className="mb-0" placeholder={"Category name"} value={name} onChange={ev=>setName(ev.target.value)}/>
-                <select className="mb-0" value={parentCategory} onChange={ev=>SetParentCategory(ev.target.value)}>
+            <form onSubmit={saveCategory}  >
+                <div className="flex gap-1">
+                 
+                <input type="text"   placeholder={"Category name"} value={name} onChange={ev=>setName(ev.target.value)}/>
+                <select  value={parentCategory} onChange={ev=>SetParentCategory(ev.target.value)}>
                     <option value="">No parent category</option>
                     {categories.length>0&&categories.map(category=><option value={category._id}>{category.name}</option>)}
 
                      
-                </select>
+                </select>   
+
+                </div>
+                <div className="mb-2">
+                    <label className="block">Properties</label>
+                    <button type="button" onClick={addProperty} className="btn-default text-sm  mb-2" >Add new Property</button>
+                    {properties.length>0 && properties.map((property,index)=>(
+                        <div className="flex gap-1 mb-2">
+                            <input className="mb-0" value={property.name} onChange={(ev)=>handlePropertyNameChange(index,property,ev.target.value)} type="text" placeholder="Property name"/>
+                            <input className="mb-0" value={property.values} onChange={(ev)=>{handlePropertyValueChange(index,property,ev.target.value)}} type="text" placeholder="values, comma seperated" />
+                            <button type="button" onClick={()=>removeProperty(index)} className="btn-default">Remove</button>
+                        </div>
+                    ))}
+                </div>
+                <div className="flex gap-1">
+                    {editedCategory &&<button type="button" 
+                    onClick={()=>{
+                    setEditedCategory(null)
+                    setName('')
+                    SetParentCategory('')
+                    }} className="btn-default py-1">Cancel</button>}
+
+                
+
+             
                 <button type="submit" className="btn-save py-1">Save</button>
 
-            </div>
+                </div>
+                
+
+             
             </form>
-            <table className="basic mt-4">
+            {!editedCategory &&<table className="basic mt-4">
                 <thead>
                     <tr><td>Category name</td><td>Parent Category</td><td></td></tr>
                 </thead>
                 <tbody>
                     {categories.length>0&&categories.map(category=>(<tr><td>{category.name}</td><td>{category?.parent?.name}</td><td><div><button className="btn-save mr-1" onClick={()=>editCategory(category)}>Edit</button><button className="btn-save" onClick={()=>deleteCategory(category)}>Delete</button></div></td></tr>))}
                 </tbody>
-            </table>
+            </table> }
+            
             
         </Layout>
     )
