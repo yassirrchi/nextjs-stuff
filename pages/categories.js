@@ -26,6 +26,9 @@ import { withSwal } from 'react-sweetalert2';
         setEditedCategory(category)
         setName(category.name)
         SetParentCategory(category?.parent?._id)
+        setProperties(category.properties.map(({name,values})=>(
+            {name,values:values.join(',')}
+        )))
 
 
 
@@ -73,7 +76,7 @@ import { withSwal } from 'react-sweetalert2';
     
     const [name,setName]=useState('')
     async function saveCategory(ev){
-        const  data={name,parentCategory}
+        const  data={name,parentCategory,properties:properties.map(p=>({name:p.name,values:p.values.split(',')}))}
         ev.preventDefault()
         if(editedCategory){
             await axios.put('/api/categories',{...data,_id:editedCategory._id})
@@ -88,6 +91,8 @@ import { withSwal } from 'react-sweetalert2';
 
         
         setName('')
+        SetParentCategory('')
+        setProperties([])
         fetchCategories()
 
 
@@ -104,6 +109,7 @@ import { withSwal } from 'react-sweetalert2';
             })
         })
     }
+   
     return(
         <Layout>
             <h1>Categories</h1>
