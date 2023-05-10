@@ -11,7 +11,7 @@ export default NextAuth({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET
     }),
-    // Passwordless / email sign in
+    // Passwordless / email sign in commit test
      
   ],
   adapter:MongoDBAdapter(clientPromise),
