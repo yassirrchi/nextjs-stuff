@@ -110,7 +110,7 @@ export default function ProductForm({
 
     return (<div>
     
-        <h1 className="text-blue-900 mb-2 text-xl">New Product</h1>
+        
         <form onSubmit={saveProduct}>
         
         <label>Product name</label>
@@ -123,13 +123,16 @@ export default function ProductForm({
               
         </select>
         {propertiesToFill.length>0 && propertiesToFill.map(p=>
-            (<div className="flex gap-1">
+            (<div className=" ">
                 
-                <div className="">{p.name}</div>
+                <label className="">{p.name}</label>
+                <div>
                 <select value={productProperties[p.name]} onChange={(ev)=>setProductProp(p.name,ev.target.value)}>
                     {p.values.map(v=>(<option value={v}>{v}</option>))}
 
                 </select>
+                </div>
+                
 
             </div>)
         )}
@@ -137,10 +140,10 @@ export default function ProductForm({
 
         <div className="mb-2 flex flex-wrap gap-2">
             <ReactSortable list={images} className="flex flex-wrap gap-1" setList={updateImagesOrder}>
-             {images?.length>0&&images.map(img=><div key={img} className="h-24"><img src={img} className="rounded-lg"/></div>)}
+             {images?.length>0&&images.map(img=><div key={img} className="h-24 bg-white shadow-sm rounded-sm border border-gray-200"><img src={img} className="rounded-lg"/></div>)}
              </ReactSortable>
             {isUploading&&(<div className="h-24 p-1 bg-gray-200 items-center"><Spinner/></div>)}
-            <label className="w-24 h-24 border flex items-center justify-center text-sm gap-1 text-gray-500 rounded-lg bg-gray-200"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ">
+            <label className="w-24 h-24 border flex items-center justify-center text-sm gap-1 text-purple-600 rounded-lg bg-white shadow-sm border border-purple-600"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ">
   <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
 </svg>
 Upload<input onChange={uploadImages} type="file" className="hidden"/></label>

@@ -133,7 +133,7 @@ import { withSwal } from 'react-sweetalert2';
                         <div className="flex gap-1 mb-2">
                             <input className="mb-0" value={property.name} onChange={(ev)=>handlePropertyNameChange(index,property,ev.target.value)} type="text" placeholder="Property name"/>
                             <input className="mb-0" value={property.values} onChange={(ev)=>{handlePropertyValueChange(index,property,ev.target.value)}} type="text" placeholder="values, comma seperated" />
-                            <button type="button" onClick={()=>removeProperty(index)} className="btn-default">Remove</button>
+                            <button type="button" onClick={()=>removeProperty(index)} className="btn-red">Remove</button>
                         </div>
                     ))}
                 </div>
@@ -160,7 +160,7 @@ import { withSwal } from 'react-sweetalert2';
                     <tr><td>Category name</td><td>Parent Category</td><td></td></tr>
                 </thead>
                 <tbody>
-                    {categories.length>0&&categories.map(category=>(<tr><td>{category.name}</td><td>{category?.parent?.name}</td><td><div><button className="btn-save mr-1" onClick={()=>editCategory(category)}>Edit</button><button className="btn-save" onClick={()=>deleteCategory(category)}>Delete</button></div></td></tr>))}
+                    {categories.length>0&&categories.map(category=>(<tr><td>{category.name}</td><td>{category?.parent?.name}</td><td><div><button className="btn-default mr-1" onClick={()=>editCategory(category)}>Edit</button><button className="btn-red" onClick={()=>deleteCategory(category)}>Delete</button></div></td></tr>))}
                 </tbody>
             </table> }
             
